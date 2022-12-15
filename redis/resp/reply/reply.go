@@ -28,15 +28,15 @@ func NewBulkReply(s []byte) *BulkReply {
 }
 
 type MultiBulkReply struct {
-	ms [][]byte
+	Args [][]byte
 }
 
 func (r *MultiBulkReply) ToBytes() []byte {
 	var bytesBuffer bytes.Buffer
 	var bulkReply BulkReply
 
-	bytesBuffer.WriteString("*" + strconv.Itoa(len(r.ms)) + CRLF)
-	for _, s := range r.ms {
+	bytesBuffer.WriteString("*" + strconv.Itoa(len(r.Args)) + CRLF)
+	for _, s := range r.Args {
 		bulkReply.s = s
 		bytesBuffer.Write(bulkReply.ToBytes())
 	}
@@ -44,8 +44,8 @@ func (r *MultiBulkReply) ToBytes() []byte {
 	return bytesBuffer.Bytes()
 }
 
-func NewMultiBulkReply(ms [][]byte) *MultiBulkReply {
-	return &MultiBulkReply{ms: ms}
+func NewMultiBulkReply(args [][]byte) *MultiBulkReply {
+	return &MultiBulkReply{Args: args}
 }
 
 // StatusReply 回复状态
