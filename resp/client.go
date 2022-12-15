@@ -1,4 +1,4 @@
-package redis
+package resp
 
 import (
 	"net"
@@ -7,21 +7,21 @@ import (
 	"time"
 )
 
-type DefaultClient struct {
+type defaultClient struct {
 	// TCP 的连接
 	connection net.Conn
-	// 当 Redis 前客户端连接的数据库序号
+	// 当前客户端连接的数据库序号
 	selectedDB int
 
 	waitingReply wait.Wait
 	locker       sync.Mutex
 }
 
-func NewDefaultClient(connection net.Conn) *DefaultClient {
-	return &DefaultClient{connection: connection}
+func newDefaultClient(connection net.Conn) *defaultClient {
+	return &defaultClient{connection: connection}
 }
 
-func (c *DefaultClient) Write(bytes []byte) error {
+func (c *defaultClient) Write(bytes []byte) error {
 	if len(bytes) == 0 {
 		return nil
 	}
@@ -37,20 +37,20 @@ func (c *DefaultClient) Write(bytes []byte) error {
 	return err
 }
 
-func (c *DefaultClient) GetDBIndex() int {
+func (c *defaultClient) GetDBIndex() int {
 	return c.selectedDB
 }
 
-func (c *DefaultClient) SelectDB(index int) {
+func (c *defaultClient) SelectDB(index int) {
 	c.selectedDB = index
 }
 
-func (c *DefaultClient) Close() error {
+func (c *defaultClient) Close() error {
 	c.waitingReply.WaitWithTimeout(10 * time.Second)
 	_ = c.connection.Close()
 	return nil
 }
 
-func (c *DefaultClient) RemoteAddr() net.Addr {
+func (c *defaultClient) RemoteAddr() net.Addr {
 	return c.connection.RemoteAddr()
 }

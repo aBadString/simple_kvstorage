@@ -85,7 +85,7 @@ func GetPongReply() *PongReply {
 ```go
 type ErrorReply interface {
     error
-    redis.Reply
+    Reply
 }
 
 

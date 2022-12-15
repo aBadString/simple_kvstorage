@@ -1,8 +1,8 @@
-package redis
+package resp
 
 import (
 	"simple_kvstorage/common"
-	"simple_kvstorage/redis/resp/reply"
+	"simple_kvstorage/resp/reply"
 	"simple_kvstorage/tcp"
 	"simple_kvstorage/util/logger"
 	"testing"
@@ -20,12 +20,12 @@ func TestHandler(t *testing.T) {
 type echoDatabase struct {
 }
 
-func (d *echoDatabase) Exec(client common.RedisClient, args [][]byte) reply.Reply {
+func (d *echoDatabase) Exec(client common.Client, args [][]byte) reply.Reply {
 	logger.Debug("echoDatabase Exec")
 	return reply.NewMultiBulkReply(args)
 }
 
-func (d *echoDatabase) AfterClientClose(client common.RedisClient) {
+func (d *echoDatabase) AfterClientClose(client common.Client) {
 	logger.Debug("echoDatabase AfterClientClose")
 }
 

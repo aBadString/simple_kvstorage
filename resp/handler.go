@@ -1,12 +1,12 @@
-package redis
+package resp
 
 import (
 	"context"
 	"io"
 	"net"
 	"simple_kvstorage/database"
-	"simple_kvstorage/redis/resp/parser"
-	"simple_kvstorage/redis/resp/reply"
+	"simple_kvstorage/resp/parser"
+	"simple_kvstorage/resp/reply"
 	"simple_kvstorage/util/logger"
 	"simple_kvstorage/util/sync/atomic"
 	"strings"
@@ -34,7 +34,7 @@ func (h *Handler) Handle(connection net.Conn, ctx context.Context) {
 	}
 
 	// 2. 将连接封装进客户端中, 并记录客户端到活跃客户端的容器里
-	client := NewDefaultClient(connection)
+	client := newDefaultClient(connection)
 	h.activeClient.Store(client, struct{}{})
 
 	// 3. 与客户端进行交互通信
@@ -90,10 +90,10 @@ func (h *Handler) Handle(connection net.Conn, ctx context.Context) {
 }
 
 func (h *Handler) Close() error {
-	logger.Info("Redis handler 即将关闭, 等待所有 Redis 连接的释放")
+	logger.Info("Redis handler 即将关闭, 等待所有 Redis 连接的释放.")
 	h.closing.Set(true)
 	h.activeClient.Range(func(key, value any) bool {
-		_ = key.(*DefaultClient).Close()
+		_ = key.(*defaultClient).Close()
 		return true
 	})
 	h.db.Close()
@@ -102,9 +102,9 @@ func (h *Handler) Close() error {
 }
 
 // closeClient 关闭一个 Redis 客户端连接
-func (h *Handler) closeClient(client *DefaultClient) {
+func (h *Handler) closeClient(client *defaultClient) {
 	_ = client.Close()
 	h.db.AfterClientClose(client)
 	h.activeClient.Delete(client)
-	logger.Info("Redis Client 已关闭", client.RemoteAddr())
+	logger.Info("Redis Client 已关闭.", client.RemoteAddr())
 }

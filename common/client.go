@@ -1,7 +1,7 @@
 package common
 
-// RedisClient 描述了 Redis 客户端连接的操作
-type RedisClient interface {
+// Client 描述了 Redis 客户端连接的操作
+type Client interface {
 	// Write 向 Redis 客户端写数据
 	Write([]byte) error
 

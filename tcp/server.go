@@ -10,6 +10,12 @@ import (
 	"syscall"
 )
 
+// Handler TCP 连接的处理器
+type Handler interface {
+	Handle(connection net.Conn, ctx context.Context)
+	Close() error
+}
+
 // Config TCP 服务器的配置
 type Config struct {
 	// Address 监听地址, 形如 "127.0.0.1:6379"

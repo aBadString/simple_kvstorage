@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"io"
 	"runtime/debug"
-	"simple_kvstorage/redis/resp/reply"
+	"simple_kvstorage/resp/reply"
 	"simple_kvstorage/util/logger"
 	"strconv"
 )
