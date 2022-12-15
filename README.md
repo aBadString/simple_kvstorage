@@ -23,11 +23,11 @@
 ## 3.1. Reply
 
 **回复类型**:  
-1. 正常回复: 以 `+` 开头, `\r\n` 结尾的字符串. `"+OK\r\n"`
+1. 正常回复 (单行字符串 Simple String): 以 `+` 开头, `\r\n` 结尾的字符串. `"+OK\r\n"`
 2. 错误回复: 以 `-` 开头, `\r\n` 结尾的字符串. `"-Error message\r\n"`
 3. 整数: 以 `:` 开头, `\r\n` 结尾的字符串, 组成字符串的每个字符都是数字字符. `:1024\r\n`
-4. 多行字符串: 以 `$` 开头, 后跟实际字节长度, 再跟`\r\n`, 随后是字符串, 最后以 `\r\n` 结尾. `"$5\r\nhello\r\n"`
-5. 数组: 以 `*` 开头, 后跟元素数量
+4. 多行字符串 (Bulk): 以 `$` 开头, 后跟实际字节长度, 再跟`\r\n`, 随后是字符串, 最后以 `\r\n` 结尾. `"$5\r\nhello\r\n"`
+5. 数组 (Multi Bulk): 以 `*` 开头, 后跟元素数量
 
 > In RESP, the first byte determines the data type:  
 > - For Simple Strings, the first byte of the reply is "+"
