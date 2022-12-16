@@ -1,4 +1,4 @@
-package common
+package config
 
 import (
 	"bufio"
@@ -33,6 +33,7 @@ func init() {
 		Bind:       "127.0.0.1",
 		Port:       6379,
 		AppendOnly: false,
+		Databases:  16,
 	}
 }
 

@@ -10,11 +10,7 @@ type MapDB struct {
 	data sync.Map
 }
 
-func newMapDB() *MapDB {
-	return &MapDB{}
-}
-
-func newMapDBWithIndex(index int) *MapDB {
+func NewMapDB(index int) *MapDB {
 	return &MapDB{index: index}
 }
 

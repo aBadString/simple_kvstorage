@@ -1,4 +1,4 @@
-package parser
+package resp
 
 import (
 	"bufio"
@@ -49,7 +49,7 @@ func CreateParser(reader io.Reader) <-chan *Payload {
 			logger.Info("RESP 解析器停止工作.")
 			close(parseChan)
 			if err := recover(); err != nil {
-				logger.Error("recover 时发生错误.", string(debug.Stack()))
+				logger.Error("recover 时发生错误.", err, '\n', string(debug.Stack()))
 			}
 		}()
 		parseToChan(reader, parseChan)
@@ -250,7 +250,7 @@ func parserSingle(single []byte) (reply.Reply, error) {
 	case '+':
 		return reply.NewStatusReply(msg), nil
 	case '-':
-		return reply.NewStandardErrReply(msg), nil
+		return reply.NewStandardErrorReply(msg), nil
 	case ':':
 		i, err := strconv.ParseInt(msg, 10, 64)
 		if err != nil {

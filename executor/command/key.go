@@ -88,7 +88,7 @@ func execRename(db database.DB, args [][]byte) reply.Reply {
 
 	entity, exists := db.Get(key)
 	if !exists {
-		return reply.NewStandardErrReply("no such key '" + key + "'")
+		return reply.NewStandardErrorReply("no such key '" + key + "'")
 	}
 
 	db.Put(newKey, entity)
@@ -109,7 +109,7 @@ func execRenameNx(db database.DB, args [][]byte) reply.Reply {
 
 	entity, exist := db.Get(key)
 	if !exist {
-		return reply.NewStandardErrReply("no such key '" + key + "'")
+		return reply.NewStandardErrorReply("no such key '" + key + "'")
 	}
 
 	db.Put(newKey, entity)

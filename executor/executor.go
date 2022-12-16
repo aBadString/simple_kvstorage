@@ -16,7 +16,7 @@ func Exec(db database.DB, cmdLine CmdLine) reply.Reply {
 
 	cmd, exist := cmdTable[cmdName]
 	if !exist {
-		return reply.NewStandardErrReply("ERROR unknown command '" + cmdName + "'")
+		return reply.NewStandardErrorReply("ERROR unknown command '" + cmdName + "'")
 	}
 	if !cmd.validateArity(cmdLine) {
 		return reply.NewArgNumberErrorReply(cmdName)

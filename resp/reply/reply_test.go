@@ -42,7 +42,7 @@ func TestErrorReply(t *testing.T) {
 		GetWrongTypeErrorReply(),
 		NewProtocolErrorReply("TEST"),
 		NewArgNumberErrorReply("TEST"),
-		NewStandardErrReply("TEST"),
+		NewStandardErrorReply("TEST"),
 	}
 
 	for _, errorReply := range errorReplies {

@@ -103,19 +103,19 @@ func NewProtocolErrorReply(msg string) *ProtocolErrorReply {
 	}
 }
 
-// StandardErrReply 标准错误回复
-type StandardErrReply struct {
+// StandardErrorReply 标准错误回复
+type StandardErrorReply struct {
 	Message string
 }
 
-func (r *StandardErrReply) Error() string {
+func (r *StandardErrorReply) Error() string {
 	return r.Message
 }
 
-func (r *StandardErrReply) ToBytes() []byte {
+func (r *StandardErrorReply) ToBytes() []byte {
 	return []byte("-" + r.Message + CRLF)
 }
 
-func NewStandardErrReply(message string) *StandardErrReply {
-	return &StandardErrReply{Message: message}
+func NewStandardErrorReply(message string) *StandardErrorReply {
+	return &StandardErrorReply{Message: message}
 }
