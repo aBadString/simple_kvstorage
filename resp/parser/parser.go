@@ -169,7 +169,7 @@ func readLine(bufferReader *bufio.Reader, state *parseState) ([]byte, error, boo
 
 	// 2. 若所读到的一行字符串不是以 CRLF 结尾, 则表示客户端发送的数据不符合协议
 	if !isEndWithCRLF(line) {
-		return nil, reply.NewProtocolErrorReply("没有读到 CRLF"), false
+		return nil, reply.NewProtocolErrorReply(string(line)), false
 	}
 
 	return line, nil, false
