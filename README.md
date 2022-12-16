@@ -20,8 +20,6 @@
 
 > [RESP protocol spec | Redis](https://redis.io/topics/protocol)
 
-## 3.1. Reply
-
 **回复类型**:  
 1. 正常回复 (单行字符串 Simple String): 以 `+` 开头, `\r\n` 结尾的字符串. `"+OK\r\n"`
 2. 错误回复: 以 `-` 开头, `\r\n` 结尾的字符串. `"-Error message\r\n"`
@@ -108,3 +106,8 @@ func NewArgNumberErrorReply(cmd string) *ArgNumberErrorReply {
     }
 }
 ```
+
+
+# 4. 命令
+
+> [Commands | Redis](https://redis.io/commands)
