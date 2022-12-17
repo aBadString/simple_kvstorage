@@ -57,6 +57,8 @@ func execKeys(db database.DB, args [][]byte) reply.Reply {
 	return reply.NewMultiBulkReply(result)
 }
 
+// execFlushDB FLUSH
+// 参考: https://redis.io/commands/flushdb
 func execFlushDB(db database.DB, _ [][]byte) reply.Reply {
 	db.Flush()
 	return reply.GetOkReply()

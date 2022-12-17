@@ -1,13 +1,77 @@
-# 1. 基础工具封装
+Go 语言实现的简单键值对数据库, 目前仅支持 `string` 类型的数据结构.  
+
+以 RESP 协议作为通信接口, 可以使用 `redis cli` 等客户端工具与其交互. 下面是一些交互示例:  
+
+```shell
+redis-cli > ping
+PONG
+
+redis-cli > select 1
+OK
+
+redis-cli > set a hello
+OK
+
+redis-cli > set aa hellohello
+OK
+
+redis-cli > keys *
+aa
+a
+
+redis-cli > get a
+hello
+
+redis-cli > setnx a "hello aaa"
+false
+redis-cli > get a
+hello
+
+redis-cli > setnx aaa "hello aaa"
+true
+redis-cli > keys *
+a
+aa
+aaa
+
+redis-cli > getset a "hello a"
+hello
+
+redis-cli > exists a aa b
+2
+```
+
+# 1. 支持的命令
+
+**所支持的命令都声明并定义在 `simple_kvstorage/executor/command` 包下。**
+
+- `PING [message]`
+- `GET key` 按 `key` 获取值
+- `SET key value` 存入一个键值对
+- `SETNX key value` 存入一个键值对, 若 `key` 已经存在则取消操作
+- `GETSET key value` 存入一个键值对, 若 `key` 已经存在则返回覆盖的旧值, 否则返回 `null`
+- `STRLEN key` 获取 `key` 所对应值的字符串长度
+- `DEL key [key ...]` 删除键值对
+- `EXISTS key [key ...]` 判断键是否存在
+- `KEYS pattern` 按正则匹配建
+- `FLUSH` 清空当前数据库
+- `TYPE key` 判断键的类型
+- `RENAME key newkey` 重命名键
+- `RENAMENX key newkey` 重命名键, 若 `newkey` 已经存在则取消操作
+
+> [Commands | Redis](https://redis.io/commands)
+
+# 2. 基础工具封装
 
 - `config/config.go`: 用于读取配置文件
 - `util/logger/files.go`: 封装了文件操作函数
 - `util/logger/logger.go`: 封装了日志记录函数
 - `util/sync/atomic/bool.go`: Boolean, 原子的 bool 类型
 - `util/sync/wait/wait.go`: Wait, 带有的超时机制的 sync.WaitGroup
+- `util/wildcard/wildcard.go`: 正则匹配工具
 
 
-# 2. TCP 服务器
+# 3. TCP 服务器
 
 1. 服务器进程启动时, 开启一个 Socket 监听端口, 即 `Listener`.
 2. 这个监听器工作在主协程上, 接着主协程一直循环, 并阻塞式等待客户端的连接, 即 `Accept`.
@@ -16,7 +80,7 @@
    收到外部的进程退出信号时, 则不等待其他协程退出, 直接关闭服务器.
 
 
-# 3. RESP 协议
+# 4. RESP 协议
 
 > [RESP protocol spec | Redis](https://redis.io/topics/protocol)
 
@@ -107,7 +171,6 @@ func NewArgNumberErrorReply(cmd string) *ArgNumberErrorReply {
 }
 ```
 
+# 5. 数据存储
 
-# 4. 命令
-
-> [Commands | Redis](https://redis.io/commands)
+底层数据存储结构是 `sync.Map`
