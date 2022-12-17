@@ -36,7 +36,7 @@ type echoHandler struct {
 	closing          atomic.Boolean
 }
 
-func (h *echoHandler) Handle(connection net.Conn, ctx context.Context) {
+func (h *echoHandler) Handle(connection net.Conn, _ context.Context) {
 	// 1. 如果处理器正在关闭中, 则不处理连接了
 	if h.closing.Get() {
 		_ = connection.Close()

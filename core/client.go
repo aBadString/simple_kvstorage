@@ -1,4 +1,4 @@
-package resp
+package core
 
 import (
 	"net"
@@ -7,7 +7,8 @@ import (
 	"time"
 )
 
-type defaultClient struct {
+// Client 描述了对客户端连接的操作
+type Client struct {
 	// TCP 的连接
 	connection net.Conn
 	// 当前客户端连接的数据库序号
@@ -17,11 +18,12 @@ type defaultClient struct {
 	locker       sync.Mutex
 }
 
-func newDefaultClient(connection net.Conn) *defaultClient {
-	return &defaultClient{connection: connection}
+func newClient(connection net.Conn) *Client {
+	return &Client{connection: connection}
 }
 
-func (c *defaultClient) Write(bytes []byte) error {
+// Write 向客户端写数据
+func (c *Client) Write(bytes []byte) error {
 	if len(bytes) == 0 {
 		return nil
 	}
@@ -37,20 +39,23 @@ func (c *defaultClient) Write(bytes []byte) error {
 	return err
 }
 
-func (c *defaultClient) GetDBIndex() int {
+// GetDBIndex 获取此客户端连接的数据库序号
+func (c *Client) GetDBIndex() int {
 	return c.selectedDB
 }
 
-func (c *defaultClient) SelectDB(index int) {
+// SelectDB 切换此客户端的数据库
+// index 数据库序号
+func (c *Client) SelectDB(index int) {
 	c.selectedDB = index
 }
 
-func (c *defaultClient) Close() error {
+func (c *Client) Close() error {
 	c.waitingReply.WaitWithTimeout(10 * time.Second)
 	_ = c.connection.Close()
 	return nil
 }
 
-func (c *defaultClient) RemoteAddr() net.Addr {
+func (c *Client) RemoteAddr() net.Addr {
 	return c.connection.RemoteAddr()
 }

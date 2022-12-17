@@ -16,7 +16,7 @@ var testCases = []struct {
 func TestMapDB(t *testing.T) {
 	const firstPutNum = 3
 
-	db := newMapDB()
+	db := NewMapDB(0)
 
 	for i := 0; i < firstPutNum; i++ {
 		db.Put(testCases[i].key, testCases[i].val)
@@ -98,7 +98,7 @@ func TestMapDB(t *testing.T) {
 }
 
 func TestMapDB_ForEach(t *testing.T) {
-	db := newMapDB()
+	db := NewMapDB(0)
 
 	for _, testCase := range testCases {
 		db.Put(testCase.key, testCase.val)
@@ -119,7 +119,7 @@ func TestMapDB_ForEach(t *testing.T) {
 }
 
 func TestMapDB_Flush(t *testing.T) {
-	db := newMapDBWithIndex(15)
+	db := NewMapDB(15)
 
 	for _, testCase := range testCases {
 		db.Put(testCase.key, testCase.val)

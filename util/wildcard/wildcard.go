@@ -3,7 +3,7 @@ package wildcard
 const (
 	normal     = iota
 	all        // *
-	any        // ?
+	_any       // ?
 	setSymbol  // []
 	rangSymbol // [a-b]
 	negSymbol  // [^a]
@@ -61,7 +61,7 @@ func CompilePattern(src string) *Pattern {
 		} else if c == '*' {
 			items = append(items, &item{typeCode: all})
 		} else if c == '?' {
-			items = append(items, &item{typeCode: any})
+			items = append(items, &item{typeCode: _any})
 		} else if c == '\\' {
 			escape = true
 		} else if c == '[' {
@@ -121,7 +121,7 @@ func (p *Pattern) IsMatch(s string) bool {
 				table[i][j] = table[i-1][j] || table[i][j-1]
 			} else {
 				table[i][j] = table[i-1][j-1] &&
-					(p.items[j-1].typeCode == any ||
+					(p.items[j-1].typeCode == _any ||
 						(p.items[j-1].typeCode == normal && uint8(s[i-1]) == p.items[j-1].character) ||
 						(p.items[j-1].typeCode >= setSymbol && p.items[j-1].contains(s[i-1])))
 			}
