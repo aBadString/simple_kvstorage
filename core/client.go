@@ -55,7 +55,3 @@ func (c *Client) Close() error {
 	_ = c.connection.Close()
 	return nil
 }
-
-func (c *Client) RemoteAddr() net.Addr {
-	return c.connection.RemoteAddr()
-}

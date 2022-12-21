@@ -7,6 +7,7 @@ import (
 	"runtime/debug"
 	"simple_kvstorage/database"
 	"simple_kvstorage/executor"
+	"simple_kvstorage/persistent"
 	"simple_kvstorage/resp"
 	"simple_kvstorage/resp/reply"
 	"simple_kvstorage/util/logger"
@@ -20,14 +21,17 @@ import (
 type Handler struct {
 	// 客户端连接的集合, map[*Client]struct{}
 	activeClient sync.Map
-	// 存储引擎
-	dbs []database.DB
 	// 当前 Handler 是否处于关闭过程中
 	closing atomic.Boolean
+
+	// 存储引擎
+	dbs []database.DB
+	// 持久化
+	aof persistent.Persistent
 }
 
-func NewHandler(db []database.DB) *Handler {
-	return &Handler{dbs: db}
+func NewHandler(dbs []database.DB, aof persistent.Persistent) *Handler {
+	return &Handler{dbs: dbs, aof: aof}
 }
 
 func (h *Handler) Handle(connection net.Conn, ctx context.Context) {
@@ -109,7 +113,7 @@ func (h *Handler) closeClient(client *Client) {
 	_ = client.Close()
 	h.AfterClientClose(client)
 	h.activeClient.Delete(client)
-	logger.Info("Client 已关闭.", client.RemoteAddr())
+	logger.Info("Client 已关闭.")
 }
 
 // Exec 执行命令
@@ -126,6 +130,9 @@ func (h *Handler) Exec(client *Client, cmdLine executor.CmdLine) reply.Reply {
 	}
 
 	// normal commands
+	if h.aof != nil {
+		h.aof.Persistence(client.GetDBIndex(), cmdLine)
+	}
 	selectedDB := h.dbs[client.GetDBIndex()]
 	return executor.Exec(selectedDB, cmdLine)
 }

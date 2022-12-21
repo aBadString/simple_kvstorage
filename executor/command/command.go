@@ -11,9 +11,9 @@ const (
 	rename   = "rename"
 	renameNx = "renameNx"
 
-	get    = "Get"
-	set    = "Set"
-	setNx  = "SetNx"
-	getSet = "GetSet"
-	strLen = "StrLen"
+	get    = "get"
+	set    = "set"
+	setNx  = "setNx"
+	getSet = "getSet"
+	strLen = "strLen"
 )
