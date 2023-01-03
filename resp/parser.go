@@ -44,9 +44,7 @@ func (s *parseState) finished() bool {
 func CreateParser(reader io.Reader) <-chan *Payload {
 	parseChan := make(chan *Payload)
 	go func() {
-		logger.Info("RESP 解析器开始工作.")
 		defer func() {
-			logger.Info("RESP 解析器停止工作.")
 			close(parseChan)
 			if err := recover(); err != nil {
 				logger.Error("recover 时发生错误.", err, '\n', string(debug.Stack()))

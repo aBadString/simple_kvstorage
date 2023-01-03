@@ -2,6 +2,7 @@ package tcp
 
 import (
 	"context"
+	"io"
 	"net"
 	"os"
 	"os/signal"
@@ -12,7 +13,7 @@ import (
 
 // Handler TCP 连接的处理器
 type Handler interface {
-	Handle(connection net.Conn, ctx context.Context)
+	Handle(connection io.ReadWriteCloser, ctx context.Context)
 	Close() error
 }
 

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"simple_kvstorage/config"
 	"simple_kvstorage/core"
@@ -52,7 +53,11 @@ func main() {
 	}
 
 	// 2.3. 加载持久化的数据
-	loadAof(dbs)
+	aofHandler := core.NewHandler(dbs, nil)
+	persistent.LoadAof(config.Properties.AppendFilename, func(connection io.ReadWriteCloser) {
+		aofHandler.Handle(connection, context.Background())
+	})
+	aofHandler = nil // help GC
 
 	// 3. 启动 TCP 服务
 	coreHandler := core.NewHandler(dbs, aofPersistent)
@@ -61,9 +66,4 @@ func main() {
 		logger.Error(err)
 		return
 	}
-}
-
-func loadAof(dbs []database.DB) {
-	handler := core.NewHandler(dbs, nil)
-	handler.Handle(persistent.NewLoadAofConn(config.Properties.AppendFilename), context.Background())
 }

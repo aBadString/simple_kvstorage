@@ -3,7 +3,6 @@ package core
 import (
 	"context"
 	"io"
-	"net"
 	"runtime/debug"
 	"simple_kvstorage/database"
 	"simple_kvstorage/executor"
@@ -34,7 +33,7 @@ func NewHandler(dbs []database.DB, aof persistent.Persistent) *Handler {
 	return &Handler{dbs: dbs, aof: aof}
 }
 
-func (h *Handler) Handle(connection net.Conn, ctx context.Context) {
+func (h *Handler) Handle(connection io.ReadWriteCloser, ctx context.Context) {
 	// 1. 如果处理器正在关闭中, 则不处理连接了
 	if h.closing.Get() {
 		_ = connection.Close()
@@ -113,7 +112,6 @@ func (h *Handler) closeClient(client *Client) {
 	_ = client.Close()
 	h.AfterClientClose(client)
 	h.activeClient.Delete(client)
-	logger.Info("Client 已关闭.")
 }
 
 // Exec 执行命令
@@ -130,11 +128,15 @@ func (h *Handler) Exec(client *Client, cmdLine executor.CmdLine) reply.Reply {
 	}
 
 	// normal commands
-	if h.aof != nil {
+	selectedDB := h.dbs[client.GetDBIndex()]
+	theReply := executor.Exec(selectedDB, cmdLine)
+
+	// 持久化
+	if h.aof != nil && !reply.IsErrorReply(theReply) {
 		h.aof.Persistence(client.GetDBIndex(), cmdLine)
 	}
-	selectedDB := h.dbs[client.GetDBIndex()]
-	return executor.Exec(selectedDB, cmdLine)
+
+	return theReply
 }
 
 // execSelect SELECT index

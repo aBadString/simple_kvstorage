@@ -1,7 +1,7 @@
 package core
 
 import (
-	"net"
+	"io"
 	"simple_kvstorage/util/sync/wait"
 	"sync"
 	"time"
@@ -10,7 +10,7 @@ import (
 // Client 描述了对客户端连接的操作
 type Client struct {
 	// TCP 的连接
-	connection net.Conn
+	connection io.ReadWriteCloser
 	// 当前客户端连接的数据库序号
 	selectedDB int
 
@@ -18,7 +18,7 @@ type Client struct {
 	locker       sync.Mutex
 }
 
-func newClient(connection net.Conn) *Client {
+func newClient(connection io.ReadWriteCloser) *Client {
 	return &Client{connection: connection}
 }
 
