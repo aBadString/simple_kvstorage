@@ -41,6 +41,9 @@ redis-cli > exists a aa b
 2
 ```
 
+![架构图](doc/架构图.svg)
+
+
 # 1. 支持的命令
 
 **所支持的命令都声明并定义在 `simple_kvstorage/executor/command` 包下。**
